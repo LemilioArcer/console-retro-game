@@ -11,36 +11,9 @@ function App() {
   const { data, loading, error } = useFetch(url);
 
   const [pokemones, setPokemones] = useState([]);
-  
-  const getListPokemones = () => {
-    const list = data?.results?.filter((p) => p.url);
-    const plist = list?.map((l) => fetch(l.url).then((res) => res.json()));
-    Promise.all(plist).then((values) => {
-      setPokemones(values);
-    });
-  };
-
-  useEffect(() => {
-    getListPokemones();
-  }, [data]);
-
   const [position, setPosition] = useState(1);
   const [myPokeSelection, setMyPokeSelection] = useState([]);
   const [pcPokeSelection, setPcPokeSelection] = useState([]);
-
-  const handleDirection = (direction) => {
-    if (direction === 'right' && position + 1 < 101) {
-      setPosition((prev) => prev + 1);
-    } else if(direction === 'left' && position - 1 > 0){
-      setPosition((prev) => prev - 1);
-    } else if(direction === 'down' && position + 4 < 101){
-      setPosition((prev) => prev + 4);
-    }else if(direction === 'up' && position - 4 > 0){
-      setPosition((prev) => prev - 4);
-    }else{
-      setPosition(1);
-    }
-  };
 
   function getRandomInt(min, max) {
     const minCeiled = Math.ceil(min);
@@ -48,22 +21,64 @@ function App() {
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
   }
 
+  const getListPokemones = () => {
+    const list = data?.results?.filter((p) => p.url);
+    const plist = list?.map((l) => fetch(l.url).then((res) => res.json()));
+
+    Promise.all(plist).then((values) => {
+      const saniData = values?.map((e) => {
+        return {
+          name: e.name,
+          id: e.id,
+          types: e.types,
+          moves: e.moves.map((m) => {
+            return {
+              ...m,
+              attack: getRandomInt(20, 98),
+            };
+          }),
+          sprites: e.sprites,
+        };
+      });
+
+      setPokemones(saniData);
+    });
+  };
+
+  useEffect(() => {
+    getListPokemones();
+  }, [data]);
+
+  const handleDirection = (direction) => {
+    if (direction === 'right' && position + 1 < 101) {
+      setPosition((prev) => prev + 1);
+    } else if (direction === 'left' && position - 1 > 0) {
+      setPosition((prev) => prev - 1);
+    } else if (direction === 'down' && position + 4 < 101) {
+      setPosition((prev) => prev + 4);
+    } else if (direction === 'up' && position - 4 > 0) {
+      setPosition((prev) => prev - 4);
+    } else {
+      setPosition(1);
+    }
+  };
+
   const computerSelection = () => {
     const rnd = getRandomInt(1, 100);
     const pc = pokemones.filter((p) => p.id === rnd);
     setPcPokeSelection(pc);
-  }
+  };
 
   const handleSelection = () => {
-    const selectPokemon = pokemones.filter((p) => p.id === position)
+    const selectPokemon = pokemones.filter((p) => p.id === position);
     setMyPokeSelection(selectPokemon);
     computerSelection();
-  }
+  };
 
   const handleBack = () => {
     setMyPokeSelection([]);
     setPcPokeSelection([]);
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#C9D7DB]">
