@@ -25,15 +25,18 @@ function App() {
   }
 
   const handleAttack = (movimiento) => {
-  if (!movimiento) return;
+  if (!movimiento || myHP <= 0 || pcHP <= 0) return;
   const miDanio = movimiento.attack;
-  setPcHP((prev) => Math.max(0, prev - miDanio));
+  const vidaResultantePC = Math.max(0, pcHP - miDanio);
+  setPcHP(vidaResultantePC);
 
-  setTimeout(() => {
-    const pcMovs = pcPokeSelection[0].moves;
-    const pcDanio = pcMovs[Math.floor(Math.random() * pcMovs.length)].attack;
-    setMyHP((prev) => Math.max(0, prev - pcDanio));
-  }, 1000);
+  if (vidaResultantePC > 0) {
+    setTimeout(() => {
+      const pcMovs = pcPokeSelection[0].moves;
+      const pcDanio = pcMovs[Math.floor(Math.random() * pcMovs.length)].attack;
+      setMyHP((prev) => Math.max(0, prev - pcDanio));
+    }, 1000);
+  }
 };
 
   const getListPokemones = () => {
