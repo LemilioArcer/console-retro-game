@@ -15,11 +15,26 @@ function App() {
   const [myPokeSelection, setMyPokeSelection] = useState([]);
   const [pcPokeSelection, setPcPokeSelection] = useState([]);
 
+  const [myHP, setMyHP] = useState(100);
+  const [pcHP, setPcHP] = useState(100);
+
   function getRandomInt(min, max) {
     const minCeiled = Math.ceil(min);
     const maxFloored = Math.floor(max);
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
   }
+
+  const handleAttack = (movimiento) => {
+  if (!movimiento) return;
+  const miDanio = movimiento.attack;
+  setPcHP((prev) => Math.max(0, prev - miDanio));
+
+  setTimeout(() => {
+    const pcMovs = pcPokeSelection[0].moves;
+    const pcDanio = pcMovs[Math.floor(Math.random() * pcMovs.length)].attack;
+    setMyHP((prev) => Math.max(0, prev - pcDanio));
+  }, 1000);
+};
 
   const getListPokemones = () => {
     const list = data?.results?.filter((p) => p.url);
@@ -73,6 +88,9 @@ function App() {
     const selectPokemon = pokemones.filter((p) => p.id === position);
     setMyPokeSelection(selectPokemon);
     computerSelection();
+
+    setMyHP(100);
+    setPcHP(100);
   };
 
   const handleBack = () => {
@@ -81,7 +99,7 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#C9D7DB]">
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-[#C9D7DB] overflow-auto">
       <h1 className="text-4xl font-bold mb-6 text-black tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
         Switch 2 Pokedex
       </h1>
@@ -90,12 +108,22 @@ function App() {
         <LeftControl handleDirection={handleDirection} />
         
         {myPokeSelection.length > 0 && pcPokeSelection.length > 0 ? (
-          <GameScreen myPokeSelection={myPokeSelection} pcPokeSelection={pcPokeSelection}/>
+          <GameScreen 
+            myPokeSelection={myPokeSelection} 
+            pcPokeSelection={pcPokeSelection}
+            myHP={myHP}
+            pcHP={pcHP}
+            handleAttack={handleAttack}
+          />
         ) : (
           <Screen pokemones={pokemones} position={position} />
         )}
 
-        <RightControl handleSelection={handleSelection} handleBack={handleBack} />
+        <RightControl 
+          handleSelection={handleSelection} 
+          handleBack={handleBack} 
+          handleAttack={handleAttack}
+        />
       </div>
 
       <p className="mt-4 text-sm font-bold text-gray-700 uppercase tracking-widest">

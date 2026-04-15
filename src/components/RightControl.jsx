@@ -1,6 +1,6 @@
 import React from 'react'
 
-function RightControl({ handleSelection, handleBack }) {
+function RightControl({ handleSelection, handleBack }) { 
     return (
         <div className="w-[80px] h-[200px] border-4 border-solid bg-[#2F3A40] relative rounded-r-lg border-black shadow-lg">
             

@@ -7,7 +7,6 @@ const Screen = ({ pokemones, position }) => {
   return (
     <div className="relative flex flex-col items-center">
       
-      {/* LA PANTALLA GRIS (Tu código original intacto) */}
       <div className="w-[450px] h-[200px] overflow-y-auto border-4 border-solid bg-[#F0F1F3]">
         <div className="grid grid-cols-4 justify-items-center gap-2 p-2">
           {pokemones?.map((pokemon, index) => (
