@@ -47,7 +47,6 @@ const GameScreen = ({ myPokeSelection, pcPokeSelection, myHP, pcHP, handleAttack
         </div>
       </div>
 
-      {/* BOTONES DE ATAQUE JUGADOR */}
       {myHP > 0 && pcHP > 0 && (
         <div className="absolute bottom-0 left-0 w-full h-[50px] bg-white border-t-2 border-black grid grid-cols-2 z-20">
           {myPokemon?.moves?.slice(0, 4).map((m, index) => (
